@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">EarthquakeViewer</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="earthQuakeDataResource">
+        http://earthquake.usgs.gov/earthquakes/catalogs/1day-M2.5.xml
+    </string>
+</resources>
