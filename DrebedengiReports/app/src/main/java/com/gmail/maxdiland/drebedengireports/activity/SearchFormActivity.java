@@ -1,7 +1,9 @@
 package com.gmail.maxdiland.drebedengireports.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -9,20 +11,20 @@ import android.widget.Spinner;
 import com.gmail.maxdiland.drebedengireports.R;
 import com.gmail.maxdiland.drebedengireports.db.DrebedengiDao;
 import com.gmail.maxdiland.drebedengireports.entity.Currency;
+import com.gmail.maxdiland.drebedengireports.entity.FinancialTarget;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 
-public class SearchFormActivity extends ActionBarActivity {
+public class SearchFormActivity extends Activity {
     public static final String DATABASE_PATH_KEY = "DATABASE_PATH_KEY";
-
-
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
     private DrebedengiDao drebedengiDao;
     private EditText etSum;
     private Spinner sCurrency;
     private Spinner sMoneyPlace;
     private Spinner sExpensesCategory;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +33,8 @@ public class SearchFormActivity extends ActionBarActivity {
 
         initUi();
 
-        drebedengiDao = new DrebedengiDao(
-                new File(getIntent().getStringExtra(DATABASE_PATH_KEY))
-        );
+        File dbFile = new File(getIntent().getStringExtra(DATABASE_PATH_KEY));
+        drebedengiDao = new DrebedengiDao(dbFile);
 
         fillUiWithDbData();
     }
@@ -48,13 +49,26 @@ public class SearchFormActivity extends ActionBarActivity {
 
     private void fillUiWithDbData() {
         fillCurrenciesSpinner();
-
+        fillExpensesSpinner();
+        fillMoneyPlaceSpinner();
     }
 
     private void fillCurrenciesSpinner() {
         Currency[] currencies = drebedengiDao.getCurrencies();
-        ArrayAdapter<Currency> currencyAdapter = createBaseSpinnerArrayAdapter(currencies);
-        sCurrency.setAdapter(currencyAdapter);
+        ArrayAdapter<Currency> adapter = createBaseSpinnerArrayAdapter(currencies);
+        sCurrency.setAdapter(adapter);
+    }
+
+    private void fillExpensesSpinner() {
+        FinancialTarget[] financialTargets = drebedengiDao.getExpenseCategories();
+        ArrayAdapter<FinancialTarget> adapter = createBaseSpinnerArrayAdapter(financialTargets);
+        sExpensesCategory.setAdapter(adapter);
+    }
+
+    private void fillMoneyPlaceSpinner() {
+        FinancialTarget[] financialTargets = drebedengiDao.getMoneyPlaceCategories();
+        ArrayAdapter<FinancialTarget> adapter = createBaseSpinnerArrayAdapter(financialTargets);
+        sMoneyPlace.setAdapter(adapter);
     }
 
     private <V> V getViewById(int resourceId) {
@@ -67,10 +81,13 @@ public class SearchFormActivity extends ActionBarActivity {
 
     private <T> ArrayAdapter<T> createBaseSpinnerArrayAdapter(T[] data) {
         ArrayAdapter<T> arrayAdapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, data);
+                new ArrayAdapter<T>(this, android.R.layout.simple_spinner_item, data);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return arrayAdapter;
     }
 
 
+    public void findRecords(View view) {
+
+    }
 }

@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.gmail.maxdiland.drebedengireports.entity.Currency;
+import com.gmail.maxdiland.drebedengireports.entity.FinancialTarget;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,9 +33,43 @@ public class DrebedengiDao {
         return mapCurrencies(cursor);
     }
 
+    public FinancialTarget[] getExpenseCategories() {
+        Cursor cursor = sqliteDatabase.query(
+                TABLE_TARGET, new String[]{COLUMN_CURRENCY_ID, COLUMN_CURRENCY_NAME, COLUMN_TARGET_PARENT_ID},
+                "type=3", null, null, null, null
+        );
+        return mapFinancialTargets(cursor);
+    }
+
+    public FinancialTarget[] getMoneyPlaceCategories() {
+        Cursor cursor = sqliteDatabase.query(
+                TABLE_TARGET, new String[]{COLUMN_CURRENCY_ID, COLUMN_CURRENCY_NAME, COLUMN_TARGET_PARENT_ID},
+                "type=4", null, null, null, null
+        );
+        return mapFinancialTargets(cursor);
+    }
+
+    private FinancialTarget[] mapFinancialTargets(Cursor cursor) {
+        ArrayList<FinancialTarget> financialTargets = new ArrayList<FinancialTarget>(cursor.getCount());
+        int idColumnIndex = cursor.getColumnIndex(COLUMN_TARGET_ID);
+        int nameColumnIndex = cursor.getColumnIndex(COLUMN_TARGET_NAME);
+        int parentIdColumnIndex = cursor.getColumnIndex(COLUMN_TARGET_PARENT_ID);
+        while (cursor.moveToNext()) {
+            financialTargets.add(
+                    new FinancialTarget(
+                            cursor.getInt(idColumnIndex),
+                            cursor.getString(nameColumnIndex),
+                            cursor.getInt(parentIdColumnIndex) != 0
+                    )
+            );
+        }
+
+        return financialTargets.toArray(new FinancialTarget[financialTargets.size()]);
+    }
+
 
     private Currency[] mapCurrencies(Cursor cursor) {
-        ArrayList<Currency> currencies = new ArrayList<>(cursor.getCount());
+        ArrayList<Currency> currencies = new ArrayList<Currency>(cursor.getCount());
         int idColumnIndex = cursor.getColumnIndex(COLUMN_CURRENCY_ID);
         int nameColumnIndex = cursor.getColumnIndex(COLUMN_CURRENCY_NAME);
         while (cursor.moveToNext()) {

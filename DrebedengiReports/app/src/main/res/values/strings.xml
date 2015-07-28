@@ -8,6 +8,7 @@
     <string name="searchHintComment">Comment</string>
     <string name="searchHintFromDate">Date from</string>
     <string name="searchHintTill">Date to (exclusive)</string>
+    <string name="searchFindButton">Find</string>
     <string name="title_activity_choose_database_file">ChooseDatabaseFileActivity</string>
     <string name="choosedbHintPath">Enter a path to db file</string>
     <string name="choosedbBtnConfirm">Confirm</string>
