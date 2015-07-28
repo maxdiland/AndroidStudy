@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">DrebedengiReports</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_search_form">SearchFormActivity</string>
+    <string name="searchHintSum">Sum</string>
+    <string name="searchHintComment">Comment</string>
+    <string name="searchHintFromDate">Date from</string>
+    <string name="searchHintTill">Date to (exclusive)</string>
+    <string name="title_activity_choose_database_file">ChooseDatabaseFileActivity</string>
+    <string name="choosedbHintPath">Enter a path to db file</string>
+    <string name="choosedbBtnConfirm">Confirm</string>
+    <string name="choosedbTxtFileNotFound">File doesn\'t exist</string>
+</resources>

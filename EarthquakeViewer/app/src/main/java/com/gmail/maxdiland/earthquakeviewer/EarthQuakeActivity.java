@@ -35,10 +35,6 @@ public class EarthQuakeActivity extends Activity {
         super.onCreateOptionsMenu(menu);
         menu.add(0, MENU_PREFERENCES, Menu.NONE, R.string.menu_preferences);
         return true;
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
     }
 
     @Override
