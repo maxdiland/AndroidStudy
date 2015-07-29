@@ -34,9 +34,10 @@ public class ChooseDatabaseFileActivity extends ActionBarActivity {
 
     public void confirmPathToDb(View view) {
         String dbFilePath = etPathToDb.getText().toString();
-        File filesDir = getFilesDir();
         File dbFile = new File(dbFilePath);
-        if (!dbFile.exists()) {
+        if (dbFile.isDirectory()) {
+            Toast.makeText(this, R.string.choosedbTxtIsNotAFile, Toast.LENGTH_LONG).show();
+        } else if (!dbFile.exists()) {
             Toast.makeText(this, R.string.choosedbTxtFileNotFound, Toast.LENGTH_LONG).show();
         } else {
             Intent intent = new Intent(this, SearchFormActivity.class);

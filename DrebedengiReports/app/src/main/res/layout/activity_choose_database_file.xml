@@ -13,7 +13,9 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:hint="@string/choosedbHintPath" />
+        android:hint="@string/choosedbHintPath"
+        android:text="@string/pathToDb"
+        />
 
     <Button
         android:layout_width="wrap_content"

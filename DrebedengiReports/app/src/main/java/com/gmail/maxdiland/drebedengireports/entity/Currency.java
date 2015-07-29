@@ -1,11 +1,17 @@
 package com.gmail.maxdiland.drebedengireports.entity;
 
+import com.gmail.maxdiland.drebedengireports.db.util.annotation.Field;
+
 /**
  * author Max Diland
  */
 public class Currency {
-    private final int id;
-    private final String name;
+    @Field("client_id")
+    private int id;
+    @Field("name")
+    private String name;
+
+    public Currency() {}
 
     public Currency(int id, String name) {
         this.id = id;

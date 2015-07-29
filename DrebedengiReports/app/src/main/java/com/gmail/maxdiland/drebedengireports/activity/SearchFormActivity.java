@@ -2,14 +2,13 @@ package com.gmail.maxdiland.drebedengireports.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.gmail.maxdiland.drebedengireports.R;
-import com.gmail.maxdiland.drebedengireports.db.DrebedengiDao;
+import com.gmail.maxdiland.drebedengireports.db.DrebedengiEntityDao;
 import com.gmail.maxdiland.drebedengireports.entity.Currency;
 import com.gmail.maxdiland.drebedengireports.entity.FinancialTarget;
 
@@ -20,7 +19,7 @@ public class SearchFormActivity extends Activity {
     public static final String DATABASE_PATH_KEY = "DATABASE_PATH_KEY";
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
-    private DrebedengiDao drebedengiDao;
+    private DrebedengiEntityDao drebedengiEntityDao;
     private EditText etSum;
     private Spinner sCurrency;
     private Spinner sMoneyPlace;
@@ -32,11 +31,13 @@ public class SearchFormActivity extends Activity {
         setContentView(R.layout.activity_search_form);
 
         initUi();
-
-        File dbFile = new File(getIntent().getStringExtra(DATABASE_PATH_KEY));
-        drebedengiDao = new DrebedengiDao(dbFile);
-
+        initDao();
         fillUiWithDbData();
+    }
+
+    private void initDao() {
+        File dbFile = new File(getIntent().getStringExtra(DATABASE_PATH_KEY));
+        drebedengiEntityDao = new DrebedengiEntityDao(dbFile);
     }
 
     private void initUi() {
@@ -46,7 +47,6 @@ public class SearchFormActivity extends Activity {
         sExpensesCategory = getViewById(R.id.sExpensesCategory);
     }
 
-
     private void fillUiWithDbData() {
         fillCurrenciesSpinner();
         fillExpensesSpinner();
@@ -54,19 +54,19 @@ public class SearchFormActivity extends Activity {
     }
 
     private void fillCurrenciesSpinner() {
-        Currency[] currencies = drebedengiDao.getCurrencies();
+        Currency[] currencies = drebedengiEntityDao.getCurrencies();
         ArrayAdapter<Currency> adapter = createBaseSpinnerArrayAdapter(currencies);
         sCurrency.setAdapter(adapter);
     }
 
     private void fillExpensesSpinner() {
-        FinancialTarget[] financialTargets = drebedengiDao.getExpenseCategories();
+        FinancialTarget[] financialTargets = drebedengiEntityDao.getExpenseCategories();
         ArrayAdapter<FinancialTarget> adapter = createBaseSpinnerArrayAdapter(financialTargets);
         sExpensesCategory.setAdapter(adapter);
     }
 
     private void fillMoneyPlaceSpinner() {
-        FinancialTarget[] financialTargets = drebedengiDao.getMoneyPlaceCategories();
+        FinancialTarget[] financialTargets = drebedengiEntityDao.getMoneyPlaceCategories();
         ArrayAdapter<FinancialTarget> adapter = createBaseSpinnerArrayAdapter(financialTargets);
         sMoneyPlace.setAdapter(adapter);
     }
@@ -89,5 +89,11 @@ public class SearchFormActivity extends Activity {
 
     public void findRecords(View view) {
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        drebedengiEntityDao.close();
     }
 }
