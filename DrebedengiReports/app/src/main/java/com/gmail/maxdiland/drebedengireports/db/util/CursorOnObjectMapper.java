@@ -35,7 +35,6 @@ public class CursorOnObjectMapper {
                 String cursorColumnName = getCursorColumnName(field);
                 int columnIndex = cursor.getColumnIndex(cursorColumnName);
 
-
                 Object columnData = getColumnData(cursor, columnIndex);
                 try {
                     if( Modifier.isPrivate(field.getModifiers()) ) {

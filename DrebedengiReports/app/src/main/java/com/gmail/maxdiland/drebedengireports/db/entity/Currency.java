@@ -1,24 +1,21 @@
-package com.gmail.maxdiland.drebedengireports.entity;
+package com.gmail.maxdiland.drebedengireports.db.entity;
 
 import com.gmail.maxdiland.drebedengireports.db.util.annotation.Field;
 
 /**
- * author Maksim Diland (yc14md1)
+ * author Max Diland
  */
-public class FinancialTarget {
+public class Currency {
     @Field("client_id")
     private int id;
     @Field("name")
     private String name;
-    @Field("parent_id")
-    private int parentId;
 
-    public FinancialTarget() {}
+    public Currency() {}
 
-    public FinancialTarget(int id, String name, int hasParent) {
+    public Currency(int id, String name) {
         this.id = id;
         this.name = name;
-        this.parentId = hasParent;
     }
 
     public int getId() {
@@ -27,10 +24,6 @@ public class FinancialTarget {
 
     public String getName() {
         return name;
-    }
-
-    public int getParentId() {
-        return parentId;
     }
 
     @Override

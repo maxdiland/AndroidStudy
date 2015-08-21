@@ -26,6 +26,10 @@
             android:name=".activity.ChooseDatabaseFileActivity"
             android:label="@string/title_activity_choose_database_file" >
         </activity>
+        <activity
+            android:name=".activity.SearchResultActivity"
+            android:label="@string/title_activity_search_result" >
+        </activity>
     </application>
 
 </manifest>

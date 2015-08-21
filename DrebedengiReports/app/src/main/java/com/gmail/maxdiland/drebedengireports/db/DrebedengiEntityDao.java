@@ -3,8 +3,8 @@ package com.gmail.maxdiland.drebedengireports.db;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.gmail.maxdiland.drebedengireports.entity.Currency;
-import com.gmail.maxdiland.drebedengireports.entity.FinancialTarget;
+import com.gmail.maxdiland.drebedengireports.db.entity.Currency;
+import com.gmail.maxdiland.drebedengireports.db.entity.FinancialTarget;
 
 import java.io.File;
 

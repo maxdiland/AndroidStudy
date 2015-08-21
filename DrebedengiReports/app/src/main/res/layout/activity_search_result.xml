@@ -1,0 +1,59 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/zero_margin"
+    android:paddingRight="@dimen/zero_margin"
+    android:paddingTop="@dimen/zero_margin"
+    android:paddingBottom="@dimen/zero_margin"
+    tools:context="com.gmail.maxdiland.drebedengireports.activity.SearchResultActivity">
+
+    <TextView
+        android:id="@+id/tvNotFound"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/searchResultNothing"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="@dimen/abc_text_size_medium_material" />
+        <!--android:visibility="gone"-->
+
+
+
+    <LinearLayout
+        android:id="@+id/llSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:visibility="visible"
+        >
+
+        <LinearLayout
+            android:id="@+id/llSumsForCategory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="@integer/left_cell_weight"
+            >
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="@integer/united_middle_right_cell_weight"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvByCategory"
+            android:gravity="center_vertical|center_horizontal"
+            />
+            <!--android:text="blablablablablb"-->
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lvFoundOperations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/llSummary"
+        android:visibility="visible"
+        />
+
+</RelativeLayout>

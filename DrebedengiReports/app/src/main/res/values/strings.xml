@@ -15,4 +15,6 @@
     <string name="choosedbTxtFileNotFound">File doesn\'t exist</string>
     <string name="choosedbTxtIsNotAFile">Entered path links to directory. Please enter path to db file</string>
     <string name="pathToDb">/mnt/sdcard/drebedengi/base.db</string>
+    <string name="title_activity_search_result">SearchResultActivity</string>
+    <string name="searchResultNothing">Nothing found</string>
 </resources>

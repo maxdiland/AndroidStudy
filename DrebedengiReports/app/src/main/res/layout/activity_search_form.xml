@@ -61,8 +61,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/etFromDate"
             android:hint="@string/searchHintFromDate"
-            android:inputType="date" />
-
+            android:inputType="date"
+            android:onClick="pickFromDate"
+            />
 
         <EditText
             android:layout_width="0dp"
@@ -70,7 +71,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/etToDate"
             android:hint="@string/searchHintTill"
-            android:inputType="date" />
+            android:inputType="date"
+            android:onClick="pickTillDate"
+            />
     </LinearLayout>
 
     <EditText
