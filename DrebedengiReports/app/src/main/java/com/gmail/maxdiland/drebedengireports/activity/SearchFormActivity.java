@@ -168,10 +168,11 @@ public class SearchFormActivity extends Activity {
         }
 
         Intent intent = new Intent(this, SearchResultActivity.class);
-        intent.putExtra(
-                SearchResultActivity.SEARCH_CRITERIA_KEY,
-                expensesRequest.buildWhereClause()
-        );
+//        intent.putExtra(
+//                SearchResultActivity.SEARCH_CRITERIA_KEY,
+//                expensesRequest.buildWhereClause()
+//        );
+        intent.putExtra(SearchResultActivity.SEARCH_CRITERIA_KEY, expensesRequest);
         intent.putExtra(DATABASE_PATH_KEY, getIntent().getStringExtra(DATABASE_PATH_KEY));
         startActivity(intent);
     }

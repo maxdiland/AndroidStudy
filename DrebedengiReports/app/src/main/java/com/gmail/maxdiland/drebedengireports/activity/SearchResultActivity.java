@@ -15,6 +15,7 @@ import com.gmail.maxdiland.drebedengireports.adapter.FinancialOperationAdapter;
 import com.gmail.maxdiland.drebedengireports.bo.FinancialOperationBO;
 import com.gmail.maxdiland.drebedengireports.converter.dbentity.FinancialOperationConverter;
 import com.gmail.maxdiland.drebedengireports.db.OperationDao;
+import com.gmail.maxdiland.drebedengireports.request.ExpensesRequest;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -71,8 +72,8 @@ public class SearchResultActivity extends Activity {
     }
 
     private void getOperationsFromDb() {
-        String searchCriteria = getIntent().getStringExtra(SEARCH_CRITERIA_KEY);
-        operationsBO = operationConverter.convert( operationDao.findOperations(searchCriteria) );
+        ExpensesRequest request = getIntent().getParcelableExtra(SEARCH_CRITERIA_KEY);
+        operationsBO = operationConverter.convert( operationDao.findOperations(request) );
     }
 
     private void fillSummary() {

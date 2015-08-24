@@ -1,6 +1,9 @@
 package com.gmail.maxdiland.drebedengireports.request;
 
-import com.gmail.maxdiland.drebedengireports.util.calendar.CalendarUtil;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.gmail.maxdiland.drebedengireports.parcelablecreator.ExpensesRequestParcelableCreator;
 import com.gmail.maxdiland.drebedengireports.util.dateformat.DateTimeFormat;
 import com.gmail.maxdiland.drebedengireports.util.sql.SqlComparisonOperator;
 import com.gmail.maxdiland.drebedengireports.util.sql.SqlUtil;
@@ -8,14 +11,14 @@ import com.gmail.maxdiland.drebedengireports.util.sql.SqlUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * author Maksim Diland
  */
-public class ExpensesRequest implements SqlWhereClauseBuildable {
+public class ExpensesRequest implements SqlWhereClauseBuildable, Parcelable {
 
+    public static final Parcelable.Creator<ExpensesRequest> CREATOR =
+            new ExpensesRequestParcelableCreator();
     private static final int SUM_COINS_MULTIPLIER = 100;
 
     private Integer sum;
@@ -38,14 +41,6 @@ public class ExpensesRequest implements SqlWhereClauseBuildable {
                 SqlUtil.buildAndClause(buildDateFromClause(), buildDateToClause()),
                 null
         );
-
-
-
-//        return SqlUtil.buildAndClause(
-//                buildSumClause(), buildCurrencyIdClause(), buildTargetIdClause(),
-//                buildPlaceIdClause(), buildCommentClause(), buildDateFromClause()
-//        ) + SqlUtil.buildGroupByStatement("operation_date");
-
     }
 
     private String buildDateFromClause() {
@@ -126,36 +121,28 @@ public class ExpensesRequest implements SqlWhereClauseBuildable {
         this.sumClauseOperator = sumClauseOperator;
     }
 
-    public int getTargetId() {
-        return targetId;
-    }
-
-    public void setTargetId(int targetId) {
-        this.targetId = targetId;
-    }
-
-    public int getCurrencyId() {
+    public Integer getCurrencyId() {
         return currencyId;
     }
 
-    public void setCurrencyId(int currencyId) {
+    public void setCurrencyId(Integer currencyId) {
         this.currencyId = currencyId;
     }
 
-    public int getPlaceId() {
+    public Integer getTargetId() {
+        return targetId;
+    }
+
+    public void setTargetId(Integer targetId) {
+        this.targetId = targetId;
+    }
+
+    public Integer getPlaceId() {
         return placeId;
     }
 
-    public void setPlaceId(int placeId) {
+    public void setPlaceId(Integer placeId) {
         this.placeId = placeId;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
     }
 
     public String getDateFrom() {
@@ -172,5 +159,30 @@ public class ExpensesRequest implements SqlWhereClauseBuildable {
 
     public void setDateTo(String dateTo) {
         this.dateTo = dateTo;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(sum);
+        dest.writeInt( sumClauseOperator.ordinal() );
+        dest.writeValue(currencyId);
+        dest.writeValue(targetId);
+        dest.writeValue(placeId);
+        dest.writeValue(dateFrom);
+        dest.writeValue(dateTo);
+        dest.writeValue(comment);
     }
 }
