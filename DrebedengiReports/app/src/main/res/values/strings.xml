@@ -7,6 +7,9 @@
     <string name="title_activity_choose_database_file">ChooseDatabaseFileActivity</string>
     <string name="title_activity_search_result">SearchResultActivity</string>
 
+    <!-- SplashScreenActivity -->
+    <string name="splashScreenLogoLabel">Drebedengi Analyzer</string>
+
     <!-- -->
 
     <string name="hello_world">Hello world!</string>

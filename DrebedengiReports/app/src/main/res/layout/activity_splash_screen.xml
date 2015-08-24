@@ -5,15 +5,33 @@
     android:paddingRight="@dimen/zero_margin"
     android:paddingTop="@dimen/zero_margin"
     android:paddingBottom="@dimen/zero_margin"
-    tools:context=".SplashScreenActivity">
+    tools:context=".SplashScreenActivity"
+    android:background="@color/splashScreenBackground"
+    >
 
-
-    <ImageView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/imgSplashLogo"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:src="@mipmap/ic_launcher" />
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        >
+
+        <!-- TODO Investigate placing image inside the TextView -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgSplashLogo"
+            android:src="@mipmap/logo" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/splashScreenLogoLabel"
+            android:gravity="center"
+            android:textSize="@dimen/abc_text_size_large_material"
+            />
+
+    </LinearLayout>
+
 </RelativeLayout>
