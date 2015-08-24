@@ -33,10 +33,6 @@ public final class SqlUtil {
 
     public static String buildLogicalClause(SqlLogicalOperator operator, String ... clauses) {
         String[] filteredClauses = filterEmptyClauses(clauses);
-        //Useless?
-//        if ( ArrayUtils.isEmpty(filteredClauses) ) {
-//            return "";
-//        }
         return StringUtils.join(filteredClauses, operator.getSqlRepresentationWithSpaces());
     }
 
@@ -80,7 +76,9 @@ public final class SqlUtil {
         return buildClause(
                 columnName,
                 SqlComparisonOperator.LIKE,
-                String.format(CONTAINING_PHRASE_LIKE_CLAUSE_PATTERN, value)
+                wrapWithSingleQuotes(
+                        String.format(CONTAINING_PHRASE_LIKE_CLAUSE_PATTERN, value)
+                )
         );
     }
 
