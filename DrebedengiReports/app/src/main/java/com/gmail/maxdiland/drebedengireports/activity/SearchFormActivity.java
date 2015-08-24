@@ -147,7 +147,8 @@ public class SearchFormActivity extends Activity {
             expensesRequest.setPlaceId(moneyPlaceId);
         }
 
-        int expenseCategoryId = ((FinancialTarget) sExpensesCategory.getSelectedItem()).getId();
+        FinancialTarget expenseCategory = (FinancialTarget) sExpensesCategory.getSelectedItem();
+        int expenseCategoryId = expenseCategory.getId();
         if (isNotEmptySpinnerEntry(expenseCategoryId)) {
             expensesRequest.setTargetId(expenseCategoryId);
         }
@@ -168,11 +169,8 @@ public class SearchFormActivity extends Activity {
         }
 
         Intent intent = new Intent(this, SearchResultActivity.class);
-//        intent.putExtra(
-//                SearchResultActivity.SEARCH_CRITERIA_KEY,
-//                expensesRequest.buildWhereClause()
-//        );
         intent.putExtra(SearchResultActivity.SEARCH_CRITERIA_KEY, expensesRequest);
+        intent.putExtra(SearchResultActivity.CATEGORY_NAME_KEY, expenseCategory.getName());
         intent.putExtra(DATABASE_PATH_KEY, getIntent().getStringExtra(DATABASE_PATH_KEY));
         startActivity(intent);
     }

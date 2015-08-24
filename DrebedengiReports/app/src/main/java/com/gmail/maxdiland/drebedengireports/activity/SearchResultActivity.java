@@ -1,6 +1,8 @@
 package com.gmail.maxdiland.drebedengireports.activity;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -26,8 +28,8 @@ import java.util.Map;
 public class SearchResultActivity extends Activity {
 
     public static final String SEARCH_CRITERIA_KEY = "SEARCH_CRITERIA_KEY";
-    public static final String SEARCH_TARGET_CATEGORY_KEY = "SEARCH_TARGET_CATEGORY_KEY";
-    public static final int SCALE = 2;
+    public static final String CATEGORY_NAME_KEY = "CATEGORY_NAME_KEY";
+    public static final int DIGITS_AFTER_COMMA = 2;
     private OperationDao operationDao;
     private FinancialOperationConverter operationConverter = new FinancialOperationConverter();
 
@@ -35,17 +37,32 @@ public class SearchResultActivity extends Activity {
     private ListView lvFoundOperations;
     private LinearLayout llSummary;
     private FinancialOperationBO[] operationsBO;
+    private ExpensesRequest request;
+    private String searchTargetCategoryName;
+    private Resources resources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
+        resources = getResources();
 
         initUi();
         initDao();
-
+        initFieldsFromIntent();
         getOperationsFromDb();
         updateUiWithData();
+    }
+
+    private void initFieldsFromIntent() {
+        Intent intent = getIntent();
+        request = intent.getParcelableExtra(SEARCH_CRITERIA_KEY);
+        searchTargetCategoryName = intent.getStringExtra(CATEGORY_NAME_KEY);
+        if (request == null) {
+            throw new IllegalStateException("To start SearchResultActivity the instance " +
+                    "of ExpensesRequest should be passed through Intent"
+            );
+        }
     }
 
     private void initUi() {
@@ -72,7 +89,6 @@ public class SearchResultActivity extends Activity {
     }
 
     private void getOperationsFromDb() {
-        ExpensesRequest request = getIntent().getParcelableExtra(SEARCH_CRITERIA_KEY);
         operationsBO = operationConverter.convert( operationDao.findOperations(request) );
     }
 
@@ -85,12 +101,13 @@ public class SearchResultActivity extends Activity {
 
         llSumsForCategory.removeAllViews();
 
-        tvByCategory.setText("Итого по категории....");
+        String totalByCategoryPattern = resources.getString(R.string.totalByCategory);
+        tvByCategory.setText(String.format(totalByCategoryPattern,  searchTargetCategoryName));
         for (Map.Entry<String, BigDecimal> entry : sums.entrySet()) {
             TextView textView = new TextView(this);
             textView.setGravity(Gravity.END);
             BigDecimal sum = entry.getValue();
-            sum = sum.setScale(SCALE, RoundingMode.HALF_UP);
+            sum = sum.setScale(DIGITS_AFTER_COMMA, RoundingMode.HALF_UP);
             textView.setText(String.valueOf(sum.floatValue()) + " " + entry.getKey());
             llSumsForCategory.addView(textView);
         }
