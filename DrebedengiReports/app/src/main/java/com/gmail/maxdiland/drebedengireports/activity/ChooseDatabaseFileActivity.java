@@ -45,4 +45,9 @@ public class ChooseDatabaseFileActivity extends ActionBarActivity {
             startActivity(intent);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

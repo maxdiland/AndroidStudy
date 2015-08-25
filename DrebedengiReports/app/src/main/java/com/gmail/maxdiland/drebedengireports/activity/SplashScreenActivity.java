@@ -3,6 +3,7 @@ package com.gmail.maxdiland.drebedengireports.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -15,50 +16,35 @@ import com.gmail.maxdiland.drebedengireports.R;
 
 
 public class SplashScreenActivity extends Activity {
+    private NextActivityStarterTask nextActivityStarterTask = new NextActivityStarterTask();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        nextActivityStarterTask.execute();
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    public void onBackPressed() {
+        nextActivityStarterTask.cancel(true);
+        finish();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
-                Intent intent = new Intent(SplashScreenActivity.this, ChooseDatabaseFileActivity.class);
-                startActivity(intent);
+    private class NextActivityStarterTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                Thread.sleep(getResources().getInteger(R.integer.splashScreenDelay));
+            } catch (InterruptedException e) {
+                return null;
             }
-        }).start();
-
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
-        return super.onCreateView(name, context, attrs);
+            Intent intent = new Intent(SplashScreenActivity.this, ChooseDatabaseFileActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
+            finish();
+            return null;
+        }
     }
 }
