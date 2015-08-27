@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="splashScreenDelay" type="integer">1200</item>
+    <string name="drebedengiFolderPath">/mnt/sdcard/drebedengi</string>
+    <string name="pathToDb">/mnt/sdcard/drebedengi/base.db</string>
+
+    <!--<string name="dbFileNamePattern">\\w{4}_\\d{2}_\\d{2}_\\d{2}_drebedengi.db</string>-->
+    <string name="dbFileNamePattern">.*.db</string>
 </resources>

@@ -1,6 +1,6 @@
 <resources>
     <!-- Application name -->
-    <string name="app_name">DrebedengiReports</string>
+    <string name="app_name">Drebedengi Analyzer</string>
 
     <!-- Activities titles -->
     <string name="title_activity_search_form">SearchFormActivity</string>
@@ -8,7 +8,6 @@
     <string name="title_activity_search_result">SearchResultActivity</string>
 
     <!-- SplashScreenActivity -->
-    <string name="splashScreenLogoLabel">Drebedengi Analyzer</string>
 
     <!-- -->
 
@@ -22,11 +21,18 @@
     <string name="choosedbHintPath">Enter a path to db file</string>
     <string name="choosedbBtnConfirm">Confirm</string>
     <string name="choosedbTxtFileNotFound">File doesn\'t exist</string>
-    <string name="choosedbTxtIsNotAFile">Entered path links to directory. Please enter path to db file</string>
-    <string name="pathToDb">/mnt/sdcard/drebedengi/base.db</string>
+    <string name="choosedbTxtIsNotAFile">Entered path links to a directory. Please enter path to db file</string>
     <string name="searchResultNothing">Nothing found</string>
 
+    <!-- ChooseDatabaseFileActivity -->
+    <string name="chooseDbLabel">Choose database</string>
+    <string name="nothingFoundLabel">Nothing found</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="findDataBasesLabel">Find databases</string>
+    <string name="enterPathLabel">Enter path to the database file</string>
 
     <!-- SearchResultActivity -->
     <string name="totalByCategory">Total by category %s</string>
+    <string name="title_activity_my">MyActivity</string>
 </resources>
