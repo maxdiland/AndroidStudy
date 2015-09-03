@@ -10,15 +10,18 @@ public class FinancialTarget {
     private int id;
     @Field("name")
     private String name;
+    @Field("server_id")
+    private Integer serverId;
     @Field("parent_id")
     private int parentId;
 
     public FinancialTarget() {}
 
-    public FinancialTarget(int id, String name, int hasParent) {
+    public FinancialTarget(int id, String name, int parentId, Integer serverId) {
         this.id = id;
         this.name = name;
-        this.parentId = hasParent;
+        this.serverId = serverId;
+        this.parentId = parentId;
     }
 
     public int getId() {
@@ -31,6 +34,10 @@ public class FinancialTarget {
 
     public int getParentId() {
         return parentId;
+    }
+
+    public Integer getServerId() {
+        return serverId;
     }
 
     @Override

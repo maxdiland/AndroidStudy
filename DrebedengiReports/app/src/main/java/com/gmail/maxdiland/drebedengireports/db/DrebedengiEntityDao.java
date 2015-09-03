@@ -33,7 +33,11 @@ public class DrebedengiEntityDao {
 
     public FinancialTarget[] getExpenseCategories() {
         Cursor cursor = sqliteDatabase.query(
-                TABLE_TARGET, new String[]{COLUMN_CURRENCY_ID, COLUMN_CURRENCY_NAME, COLUMN_TARGET_PARENT_ID},
+                TABLE_TARGET,
+                new String[]{
+                        COLUMN_TARGET_ID, COLUMN_TARGET_NAME,
+                        COLUMN_TARGET_PARENT_ID, COLUMN_TARGET_SERVER_ID
+                },
                 "type=3", null, null, null, null
         );
         FinancialTarget[] financialTargets = mapObjects(cursor, FinancialTarget.class);
@@ -43,7 +47,7 @@ public class DrebedengiEntityDao {
 
     public FinancialTarget[] getMoneyPlaceCategories() {
         Cursor cursor = sqliteDatabase.query(
-                TABLE_TARGET, new String[]{COLUMN_CURRENCY_ID, COLUMN_CURRENCY_NAME, COLUMN_TARGET_PARENT_ID},
+                TABLE_TARGET, new String[]{COLUMN_TARGET_ID, COLUMN_TARGET_NAME, COLUMN_TARGET_PARENT_ID},
                 "type=4", null, null, null, null
         );
         FinancialTarget[] financialTargets = mapObjects(cursor, FinancialTarget.class);

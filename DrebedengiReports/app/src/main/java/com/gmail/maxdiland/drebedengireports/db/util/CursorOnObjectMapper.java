@@ -16,9 +16,10 @@ import java.util.List;
  */
 public class CursorOnObjectMapper {
     private static final String TAG = "CursorOnObjectMapper";
+    private static final int NOT_FOUND_COLUMN_INDEX = -1;
 
     public static <T> T[] mapObjects(Cursor cursor, Class<T> aClass) {
-        List<T> objects = new ArrayList<T>(cursor.getColumnCount());
+        List<T> objects = new ArrayList<T>(cursor.getCount());
         while (cursor.moveToNext()) {
             objects.add( mapObjectFromCurrentCursorPosition(cursor, aClass) );
         }
@@ -34,6 +35,11 @@ public class CursorOnObjectMapper {
                     && isFieldMarkedWithAnnotation(field, Field.class) ) {
                 String cursorColumnName = getCursorColumnName(field);
                 int columnIndex = cursor.getColumnIndex(cursorColumnName);
+
+                if (NOT_FOUND_COLUMN_INDEX == columnIndex) {
+                    Log.d(TAG, "No such column in the cursor: " + cursorColumnName);
+                    continue;
+                }
 
                 Object columnData = getColumnData(cursor, columnIndex);
                 try {

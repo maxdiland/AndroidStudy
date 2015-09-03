@@ -13,6 +13,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.gmail.maxdiland.drebedengireports.R;
+import com.gmail.maxdiland.drebedengireports.bo.FinancialTargetBO;
+import com.gmail.maxdiland.drebedengireports.converter.dbentity.FinancialTargetConverter;
 import com.gmail.maxdiland.drebedengireports.db.DrebedengiEntityDao;
 import com.gmail.maxdiland.drebedengireports.db.entity.Currency;
 import com.gmail.maxdiland.drebedengireports.db.entity.FinancialTarget;
@@ -89,7 +91,7 @@ public class SearchFormActivity extends Activity {
 
     private void fillMoneyPlaceSpinner() {
         FinancialTarget[] financialTargets = addEmptyEntryToTheBeginning(
-                new FinancialTarget(EMPTY_ENTRY_ID, EMPTY_SPINNER_ENTRY, 0),
+                new FinancialTarget(EMPTY_ENTRY_ID, EMPTY_SPINNER_ENTRY, 0, null),
                 drebedengiEntityDao.getMoneyPlaceCategories()
         );
         ArrayAdapter<FinancialTarget> adapter = createBaseSpinnerArrayAdapter(financialTargets);
@@ -102,7 +104,10 @@ public class SearchFormActivity extends Activity {
 //                drebedengiEntityDao.getExpenseCategories()
 //        );
         FinancialTarget[] financialTargets = drebedengiEntityDao.getExpenseCategories();
-        ArrayAdapter<FinancialTarget> adapter = createBaseSpinnerArrayAdapter(financialTargets);
+        FinancialTargetConverter financialTargetConverter = new FinancialTargetConverter();
+        FinancialTargetBO[] parentFinancialTargets =
+                financialTargetConverter.convert(financialTargets);
+        ArrayAdapter<FinancialTargetBO> adapter = createBaseSpinnerArrayAdapter(parentFinancialTargets);
         sExpensesCategory.setAdapter(adapter);
     }
 
@@ -147,7 +152,7 @@ public class SearchFormActivity extends Activity {
             expensesRequest.setPlaceId(moneyPlaceId);
         }
 
-        FinancialTarget expenseCategory = (FinancialTarget) sExpensesCategory.getSelectedItem();
+        FinancialTargetBO expenseCategory = (FinancialTargetBO) sExpensesCategory.getSelectedItem();
         int expenseCategoryId = expenseCategory.getId();
         if (isNotEmptySpinnerEntry(expenseCategoryId)) {
             expensesRequest.setTargetId(expenseCategoryId);
