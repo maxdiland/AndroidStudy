@@ -13,6 +13,8 @@ public class DBNames {
     public static final String COLUMN_TARGET_SERVER_ID = "server_id";
     public static final String COLUMN_TARGET_NAME = "name";
     public static final String COLUMN_TARGET_PARENT_ID = "parent_id";
+    public static final String COLUMN_TARGET_TYPE = "type";
+    public static final String COLUMN_TARGET_SORT = "sort";
 
     public static final String TABLE_RECORD = "record";
     public static final String COLUMN_RECORD_ID = "client_id";

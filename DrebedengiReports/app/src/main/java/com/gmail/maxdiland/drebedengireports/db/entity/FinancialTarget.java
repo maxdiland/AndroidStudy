@@ -6,6 +6,7 @@ import com.gmail.maxdiland.drebedengireports.db.util.annotation.Field;
  * author Maksim Diland (yc14md1)
  */
 public class FinancialTarget {
+    public static final int ROOT_PARENT_ID = -1;
     @Field("client_id")
     private int id;
     @Field("name")
@@ -38,6 +39,10 @@ public class FinancialTarget {
 
     public Integer getServerId() {
         return serverId;
+    }
+
+    public boolean isRoot() {
+        return ROOT_PARENT_ID == parentId;
     }
 
     @Override

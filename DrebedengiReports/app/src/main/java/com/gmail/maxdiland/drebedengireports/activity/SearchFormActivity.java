@@ -13,24 +13,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.gmail.maxdiland.drebedengireports.R;
-import com.gmail.maxdiland.drebedengireports.bo.FinancialTargetBO;
-import com.gmail.maxdiland.drebedengireports.converter.dbentity.FinancialTargetConverter;
 import com.gmail.maxdiland.drebedengireports.db.DrebedengiEntityDao;
 import com.gmail.maxdiland.drebedengireports.db.entity.Currency;
 import com.gmail.maxdiland.drebedengireports.db.entity.FinancialTarget;
 import com.gmail.maxdiland.drebedengireports.request.ExpensesRequest;
 import com.gmail.maxdiland.drebedengireports.util.dateformat.DateTimeFormat;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.lang.reflect.Array;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class SearchFormActivity extends Activity {
     private static final int DIALOG_FROM_DATE_PICKER = 1;
@@ -81,42 +75,27 @@ public class SearchFormActivity extends Activity {
     }
 
     private void fillCurrenciesSpinner() {
-        Currency[] currencies = addEmptyEntryToTheBeginning(
-                new Currency(EMPTY_ENTRY_ID, EMPTY_SPINNER_ENTRY),
-                drebedengiEntityDao.getCurrencies()
-        );
+        Currency[] currencies = ArrayUtils.add(
+                drebedengiEntityDao.getCurrencies(), 0,
+                new Currency(EMPTY_ENTRY_ID, EMPTY_SPINNER_ENTRY)
+        ); //TODO Investigate ability ho have non-selected (empty) entry in a spinner.
         ArrayAdapter<Currency> adapter = createBaseSpinnerArrayAdapter(currencies);
         sCurrency.setAdapter(adapter);
     }
 
     private void fillMoneyPlaceSpinner() {
-        FinancialTarget[] financialTargets = addEmptyEntryToTheBeginning(
-                new FinancialTarget(EMPTY_ENTRY_ID, EMPTY_SPINNER_ENTRY, 0, null),
-                drebedengiEntityDao.getMoneyPlaceCategories()
+        FinancialTarget[] financialTargets = ArrayUtils.add(
+                drebedengiEntityDao.getMoneyPlaceCategories(), 0,
+                new FinancialTarget(EMPTY_ENTRY_ID, EMPTY_SPINNER_ENTRY, 0, null)
         );
         ArrayAdapter<FinancialTarget> adapter = createBaseSpinnerArrayAdapter(financialTargets);
         sMoneyPlace.setAdapter(adapter);
     }
 
     private void fillExpensesSpinner() {
-//        FinancialTarget[] financialTargets = addEmptyEntryToTheBeginning(
-//                new FinancialTarget(EMPTY_ENTRY_ID, EMPTY_SPINNER_ENTRY, 0),
-//                drebedengiEntityDao.getExpenseCategories()
-//        );
-        FinancialTarget[] financialTargets = drebedengiEntityDao.getExpenseCategories();
-        FinancialTargetConverter financialTargetConverter = new FinancialTargetConverter();
-        FinancialTargetBO[] parentFinancialTargets =
-                financialTargetConverter.convert(financialTargets);
-        ArrayAdapter<FinancialTargetBO> adapter = createBaseSpinnerArrayAdapter(parentFinancialTargets);
+        FinancialTarget[] financialTargets = drebedengiEntityDao.getSortedExpenseCategories();
+        ArrayAdapter<FinancialTarget> adapter = createBaseSpinnerArrayAdapter(financialTargets);
         sExpensesCategory.setAdapter(adapter);
-    }
-
-    private <T> T[] addEmptyEntryToTheBeginning(T object, T[] array) {
-        List<T> list = new ArrayList<>(Arrays.asList(array));
-        Class<?> componentType = array.getClass().getComponentType();
-        list.add(0, object); //TODO Investigate ability ho have non-selected (empty) entry in a spinner.
-        T[] resultArray = (T[]) Array.newInstance(componentType, list.size());
-        return list.toArray(resultArray);
     }
 
     private <V> V getViewById(int resourceId) {
@@ -152,7 +131,7 @@ public class SearchFormActivity extends Activity {
             expensesRequest.setPlaceId(moneyPlaceId);
         }
 
-        FinancialTargetBO expenseCategory = (FinancialTargetBO) sExpensesCategory.getSelectedItem();
+        FinancialTarget expenseCategory = (FinancialTarget) sExpensesCategory.getSelectedItem();
         int expenseCategoryId = expenseCategory.getId();
         if (isNotEmptySpinnerEntry(expenseCategoryId)) {
             expensesRequest.setTargetId(expenseCategoryId);
