@@ -13,7 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.gmail.maxdiland.drebedengireports.R;
-import com.gmail.maxdiland.drebedengireports.adapter.FinancialOperationAdapter;
+import com.gmail.maxdiland.drebedengireports.adapter.ExtendedArrayAdapter;
 import com.gmail.maxdiland.drebedengireports.bo.FinancialOperationBO;
 import com.gmail.maxdiland.drebedengireports.converter.dbentity.FinancialOperationConverter;
 import com.gmail.maxdiland.drebedengireports.db.OperationDao;
@@ -24,6 +24,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.gmail.maxdiland.drebedengireports.util.dateformat.DateTimeFormat.*;
 
 public class SearchResultActivity extends Activity {
 
@@ -79,8 +81,7 @@ public class SearchResultActivity extends Activity {
     private void updateUiWithData() {
         if (operationsBO.length != 0) {
             tvNotFound.setVisibility(View.GONE);
-            FinancialOperationAdapter adapter = new FinancialOperationAdapter(this, operationsBO);
-            lvFoundOperations.setAdapter(adapter);
+            lvFoundOperations.setAdapter(new FinancialOperationAdapter());
             lvFoundOperations.setOnItemLongClickListener(new OperationLongClickListener());
             lvFoundOperations.setVisibility(View.VISIBLE);
             fillSummary();
@@ -147,23 +148,52 @@ public class SearchResultActivity extends Activity {
         operationDao.close();
     }
 
-    private class OperationLongClickListener implements AdapterView.OnItemLongClickListener {
+    private class FinancialOperationAdapter extends ExtendedArrayAdapter<FinancialOperationBO> {
+
+        public FinancialOperationAdapter() {
+            super(SearchResultActivity.this, R.layout.financial_operation_list_item, operationsBO);
+        }
 
         @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            FinancialOperationAdapter adapter = (FinancialOperationAdapter) parent.getAdapter();
-            FinancialOperationBO operation = adapter.getItem(position);
+        protected boolean propagateDataOnView(int position, View view) {
+            FinancialOperationBO operation = getItem(position);
+
+            TextView tvSum = (TextView) view.findViewById(R.id.tvSum);
+            TextView tvPlace = (TextView) view.findViewById(R.id.tvPlace);
+            TextView tvTarget = (TextView) view.findViewById(R.id.tvTarget);
+            TextView tvCurrency = (TextView) view.findViewById(R.id.tvCurrency);
+            TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
+            TextView tvComment = (TextView) view.findViewById(R.id.tvComment);
+
+            tvSum.setText(String.valueOf(operation.getSum()));
+            tvPlace.setText(operation.getPlaceName());
+            tvTarget.setText(operation.getTargetName());
+            tvCurrency.setText(operation.getCurrency());
+            tvDate.setText(SHORT_DATE_TIME.format(operation.getOperationDate()));
+            tvComment.setText(operation.getComment());
 
             if (operation.isIgnored()) {
-                view.setBackgroundColor(Color.TRANSPARENT);
-            } else {
-                int color = getResources().getColor(R.color.ignoredOperationListItem);
+                int color = resources.getColor(R.color.ignoredOperationListItem);
                 view.setBackgroundColor(color);
+            } else {
+                view.setBackgroundColor(Color.TRANSPARENT);
             }
+            return true;
+        }
+    }
+
+    private class OperationLongClickListener implements AdapterView.OnItemLongClickListener {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            ExtendedArrayAdapter<FinancialOperationBO> adapter =
+                    (ExtendedArrayAdapter<FinancialOperationBO>) parent.getAdapter();
+            FinancialOperationBO operation = adapter.getItem(position);
 
             operation.setIgnored( !operation.isIgnored() );
             fillSummary();
+            adapter.notifyDataSetChanged();
             return true;
         }
+
     }
 }

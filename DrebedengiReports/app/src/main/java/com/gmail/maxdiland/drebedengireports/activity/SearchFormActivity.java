@@ -13,18 +13,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.gmail.maxdiland.drebedengireports.R;
+import com.gmail.maxdiland.drebedengireports.adapter.ExtendedArrayAdapter;
 import com.gmail.maxdiland.drebedengireports.db.DrebedengiEntityDao;
 import com.gmail.maxdiland.drebedengireports.db.entity.Currency;
 import com.gmail.maxdiland.drebedengireports.db.entity.FinancialTarget;
 import com.gmail.maxdiland.drebedengireports.request.ExpensesRequest;
 import com.gmail.maxdiland.drebedengireports.util.dateformat.DateTimeFormat;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class SearchFormActivity extends Activity {
     private static final int DIALOG_FROM_DATE_PICKER = 1;
@@ -75,26 +78,25 @@ public class SearchFormActivity extends Activity {
     }
 
     private void fillCurrenciesSpinner() {
-        Currency[] currencies = ArrayUtils.add(
-                drebedengiEntityDao.getCurrencies(), 0,
-                new Currency(EMPTY_ENTRY_ID, EMPTY_SPINNER_ENTRY)
-        ); //TODO Investigate ability ho have non-selected (empty) entry in a spinner.
+        List<Currency> currencies = new ArrayList<>();
+        currencies.add(new Currency(EMPTY_ENTRY_ID, EMPTY_SPINNER_ENTRY));
+        currencies.addAll(Arrays.asList(drebedengiEntityDao.getCurrencies()));
         ArrayAdapter<Currency> adapter = createBaseSpinnerArrayAdapter(currencies);
         sCurrency.setAdapter(adapter);
     }
 
     private void fillMoneyPlaceSpinner() {
-        FinancialTarget[] financialTargets = ArrayUtils.add(
-                drebedengiEntityDao.getMoneyPlaceCategories(), 0,
-                new FinancialTarget(EMPTY_ENTRY_ID, EMPTY_SPINNER_ENTRY, 0, null)
-        );
+        List<FinancialTarget> financialTargets = new ArrayList<>();
+        financialTargets.add(new FinancialTarget(EMPTY_ENTRY_ID, EMPTY_SPINNER_ENTRY, 0, null));
+        financialTargets.addAll(Arrays.asList(drebedengiEntityDao.getMoneyPlaceCategories()));
         ArrayAdapter<FinancialTarget> adapter = createBaseSpinnerArrayAdapter(financialTargets);
         sMoneyPlace.setAdapter(adapter);
     }
 
     private void fillExpensesSpinner() {
-        FinancialTarget[] financialTargets = drebedengiEntityDao.getSortedExpenseCategories();
-        ArrayAdapter<FinancialTarget> adapter = createBaseSpinnerArrayAdapter(financialTargets);
+        ArrayAdapter<FinancialTarget> adapter = createBaseSpinnerArrayAdapter(
+                Arrays.asList(drebedengiEntityDao.getSortedExpenseCategories())
+        );
         sExpensesCategory.setAdapter(adapter);
     }
 
@@ -106,9 +108,9 @@ public class SearchFormActivity extends Activity {
         }
     }
 
-    private <T> ArrayAdapter<T> createBaseSpinnerArrayAdapter(T[] data) {
+    private <T> ArrayAdapter<T> createBaseSpinnerArrayAdapter(List<T> data) {
         ArrayAdapter<T> arrayAdapter =
-                new ArrayAdapter<T>(this, android.R.layout.simple_spinner_item, data);
+                new ExtendedArrayAdapter<T>(this, android.R.layout.simple_spinner_item, data);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return arrayAdapter;
     }
