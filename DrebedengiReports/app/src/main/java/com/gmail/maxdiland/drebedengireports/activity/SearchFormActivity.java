@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckedTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -94,10 +96,9 @@ public class SearchFormActivity extends Activity {
     }
 
     private void fillExpensesSpinner() {
-        ArrayAdapter<FinancialTarget> adapter = createBaseSpinnerArrayAdapter(
+        sExpensesCategory.setAdapter(new ExpensesSpinner(
                 Arrays.asList(drebedengiEntityDao.getSortedExpenseCategories())
-        );
-        sExpensesCategory.setAdapter(adapter);
+        ));
     }
 
     private <V> V getViewById(int resourceId) {
@@ -110,7 +111,7 @@ public class SearchFormActivity extends Activity {
 
     private <T> ArrayAdapter<T> createBaseSpinnerArrayAdapter(List<T> data) {
         ArrayAdapter<T> arrayAdapter =
-                new ExtendedArrayAdapter<T>(this, android.R.layout.simple_spinner_item, data);
+                new ExtendedArrayAdapter<>(this, android.R.layout.simple_spinner_item, data);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return arrayAdapter;
     }
@@ -195,6 +196,25 @@ public class SearchFormActivity extends Activity {
     protected void onStop() {
         super.onStop();
         drebedengiEntityDao.close();
+    }
+
+    private class ExpensesSpinner extends ExtendedArrayAdapter<FinancialTarget> {
+        private ExpensesSpinner(List<FinancialTarget> expenseCategories) {
+            super(SearchFormActivity.this, android.R.layout.simple_spinner_item, expenseCategories);
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        }
+
+        @Override
+        protected boolean propagateDataOnDropDownView(int position, View view) {
+            FinancialTarget item = getItem(position);
+            Resources res = getResources();
+            String displayText = item.isRoot() ?
+                    res.getString(R.string.spinner_spacer_zero) :
+                    res.getString(R.string.spinner_spacer);
+            displayText += item.getName();
+            ((CheckedTextView) view).setText(displayText);
+            return true;
+        }
     }
 }
 

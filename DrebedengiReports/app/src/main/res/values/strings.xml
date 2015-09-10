@@ -35,4 +35,9 @@
     <!-- SearchResultActivity -->
     <string name="totalByCategory">Total by category %s</string>
     <string name="title_activity_my">MyActivity</string>
+
+    <!-- Spinners -->
+    <string name="spinner_spacer_zero" />
+    <string name="spinner_spacer">"      "</string>
+
 </resources>

@@ -13,7 +13,8 @@ import java.util.List;
  */
 public class ExtendedArrayAdapter<T> extends ArrayAdapter<T> {
     private LayoutInflater inflater;
-    private int viewResourceId;
+    protected int viewResourceId;
+    protected int dropDownViewResourceId;
 
     public ExtendedArrayAdapter(Context context, int resource) {
         super(context, resource);
@@ -52,19 +53,38 @@ public class ExtendedArrayAdapter<T> extends ArrayAdapter<T> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View view = convertView;
-        if (view == null) {
-            view = inflater.inflate(viewResourceId, null);
-        }
+    public void setDropDownViewResource(int resource) {
+        super.setDropDownViewResource(resource);
+        dropDownViewResourceId = resource;
+    }
 
-        if ( propagateDataOnView(position, view) ) {
-            return view;
-        }
-        return super.getView(position, convertView, parent);
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        View view = createViewIfNull(convertView, dropDownViewResourceId, parent);
+        return propagateDataOnDropDownView(position, view) ?
+                view : super.getDropDownView(position, convertView, parent);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View view = createViewIfNull(convertView, viewResourceId, parent);
+        return propagateDataOnView(position, view) ?
+                view : super.getView(position, convertView, parent);
+    }
+
+    protected View createViewByResourceId(int resourceId, ViewGroup parent) {
+        return inflater.inflate(resourceId, parent, false);
+    }
+
+    protected View createViewIfNull(View view, int resource, ViewGroup parent) {
+        return (view == null) ? createViewByResourceId(resource, parent) : view;
     }
 
     protected boolean propagateDataOnView(int position, View view) {
+        return false;
+    }
+
+    protected boolean propagateDataOnDropDownView(int position, View view) {
         return false;
     }
 }
