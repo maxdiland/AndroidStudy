@@ -6,8 +6,19 @@
     <string name="title_activity_search_form">SearchFormActivity</string>
     <string name="title_activity_choose_database_file">ChooseDatabaseFileActivity</string>
     <string name="title_activity_search_result">SearchResultActivity</string>
+    <string name="title_activity_request_choice">Choose action</string>
 
     <!-- SplashScreenActivity -->
+
+
+    <!-- RequestChoiceActivity -->
+    <string name="label_choose_action">Choose action:</string>
+    <string name="label_incomes">For incomes</string>
+    <string name="label_expenses">For expenses</string>
+
+    <string name="button_search">Search</string>
+    <string name="button_category_report">Category report</string>
+    <string name="button_report">Full report</string>
 
     <!-- -->
 

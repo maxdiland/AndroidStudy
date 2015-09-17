@@ -35,7 +35,6 @@ public class SearchFormActivity extends Activity {
     private static final int DIALOG_FROM_DATE_PICKER = 1;
     private static final int DIALOG_TILL_DATE_PICKER = 2;
 
-    public static final String DATABASE_PATH_KEY = "DATABASE_PATH_KEY";
     private static final int EMPTY_ENTRY_ID = -1;
     public static final String EMPTY_SPINNER_ENTRY = "";
 
@@ -59,7 +58,9 @@ public class SearchFormActivity extends Activity {
     }
 
     private void initDao() {
-        File dbFile = new File(getIntent().getStringExtra(DATABASE_PATH_KEY));
+        File dbFile = new File(
+                getIntent().getStringExtra(ChooseDbActivity.EXTRA_DB_KEY)
+        );
         drebedengiEntityDao = new DrebedengiEntityDao(dbFile);
     }
 
@@ -158,7 +159,10 @@ public class SearchFormActivity extends Activity {
         Intent intent = new Intent(this, SearchResultActivity.class);
         intent.putExtra(SearchResultActivity.SEARCH_CRITERIA_KEY, expensesRequest);
         intent.putExtra(SearchResultActivity.CATEGORY_NAME_KEY, expenseCategory.getName());
-        intent.putExtra(DATABASE_PATH_KEY, getIntent().getStringExtra(DATABASE_PATH_KEY));
+        intent.putExtra(
+                ChooseDbActivity.EXTRA_DB_KEY,
+                getIntent().getStringExtra(ChooseDbActivity.EXTRA_DB_KEY)
+        );
         startActivity(intent);
     }
 

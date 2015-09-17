@@ -1,16 +1,9 @@
 package com.gmail.maxdiland.drebedengireports.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 
 import com.gmail.maxdiland.drebedengireports.R;
 
@@ -40,7 +33,7 @@ public class SplashScreenActivity extends Activity {
             } catch (InterruptedException e) {
                 return null;
             }
-            Intent intent = new Intent(SplashScreenActivity.this, ChooseDatabaseFileActivity.class);
+            Intent intent = new Intent(SplashScreenActivity.this, ChooseDbActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
             finish();

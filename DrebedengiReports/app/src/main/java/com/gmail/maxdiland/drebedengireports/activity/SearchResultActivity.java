@@ -74,7 +74,7 @@ public class SearchResultActivity extends Activity {
     }
 
     private void initDao() {
-        String dbPath = getIntent().getStringExtra(SearchFormActivity.DATABASE_PATH_KEY);
+        String dbPath = getIntent().getStringExtra(ChooseDbActivity.EXTRA_DB_KEY);
         operationDao = new OperationDao(new File(dbPath));
     }
 

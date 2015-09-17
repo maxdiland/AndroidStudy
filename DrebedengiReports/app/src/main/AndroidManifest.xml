@@ -23,12 +23,16 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".activity.ChooseDatabaseFileActivity"
+            android:name=".activity.ChooseDbActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
             android:name=".activity.SearchResultActivity"
             android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activity.RequestChoiceActivity"
+            android:label="@string/title_activity_request_choice" >
         </activity>
     </application>
 

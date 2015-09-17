@@ -14,8 +14,10 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.regex.Pattern;
 
-public class ChooseDatabaseFileActivity extends AppCompatActivity
+public class ChooseDbActivity extends AppCompatActivity
         implements DialogInterface.OnClickListener {
+
+    public static final String EXTRA_DB_KEY = "EXTRA_DB_KEY";
 
     private static final String DIALOG_CHOOSE_DB = "CHOOSE_DB_DIALOG";
     private static final String DIALOG_ENTER_PATH = "DIALOG_ENTER_PATH";
@@ -74,8 +76,8 @@ public class ChooseDatabaseFileActivity extends AppCompatActivity
         } else if (!dbFile.exists()) {
             Toast.makeText(this, R.string.choosedbTxtFileNotFound, Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(this, SearchFormActivity.class);
-            intent.putExtra(SearchFormActivity.DATABASE_PATH_KEY, dbFile.getAbsolutePath());
+            Intent intent = new Intent(this, RequestChoiceActivity.class);
+            intent.putExtra(EXTRA_DB_KEY, dbFile.getAbsolutePath());
             startActivity(intent);
         }
     }

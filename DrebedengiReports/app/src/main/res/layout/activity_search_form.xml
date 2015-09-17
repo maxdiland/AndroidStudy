@@ -21,7 +21,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/etSum"
             android:hint="@string/searchHintSum"
-            android:inputType="numberSigned" />
+            android:inputType="numberDecimal"
+            android:singleLine="true" />
 
         <Spinner
             android:layout_width="0dp"
