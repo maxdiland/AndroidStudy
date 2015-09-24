@@ -15,20 +15,31 @@
         android:id="@+id/llSum"
         android:orientation="horizontal">
 
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_weight="17"
+            android:layout_height="wrap_content"
+            android:id="@+id/sSumMode"
+            />
+
         <EditText
             android:layout_width="0dp"
-            android:layout_weight="2"
+            android:layout_weight="13"
             android:layout_height="wrap_content"
             android:id="@+id/etSum"
             android:hint="@string/searchHintSum"
             android:inputType="numberDecimal"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:enabled="false"
+            />
 
         <Spinner
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/sCurrency"
-            android:layout_weight="1" />
+            android:layout_weight="10"
+            android:enabled="false"
+            />
     </LinearLayout>
 
     <LinearLayout

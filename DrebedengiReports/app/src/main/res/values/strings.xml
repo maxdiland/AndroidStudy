@@ -10,6 +10,11 @@
 
     <!-- SplashScreenActivity -->
 
+    <!-- SearchFormActivity -->
+    <string name="sumModeAny">Any sum</string>
+    <string name="sumModeLess">Less than</string>
+    <string name="sumModeEqual">Equal</string>
+    <string name="sumModeGreater">Greater than</string>
 
     <!-- RequestChoiceActivity -->
     <string name="label_choose_action">Choose action:</string>

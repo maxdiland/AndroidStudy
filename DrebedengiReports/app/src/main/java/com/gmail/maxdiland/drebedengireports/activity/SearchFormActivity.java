@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import android.widget.DatePicker;
@@ -19,8 +20,11 @@ import com.gmail.maxdiland.drebedengireports.adapter.ExtendedArrayAdapter;
 import com.gmail.maxdiland.drebedengireports.db.DrebedengiEntityDao;
 import com.gmail.maxdiland.drebedengireports.db.entity.Currency;
 import com.gmail.maxdiland.drebedengireports.db.entity.FinancialTarget;
+import com.gmail.maxdiland.drebedengireports.exception.validation.SearchFormValidationException;
 import com.gmail.maxdiland.drebedengireports.request.ExpensesRequest;
+import com.gmail.maxdiland.drebedengireports.util.Toaster;
 import com.gmail.maxdiland.drebedengireports.util.dateformat.DateTimeFormat;
+import com.gmail.maxdiland.drebedengireports.util.sql.SqlComparisonOperator;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,6 +35,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static com.gmail.maxdiland.drebedengireports.util.sql.SqlComparisonOperator.*;
+
 public class SearchFormActivity extends Activity {
     private static final int DIALOG_FROM_DATE_PICKER = 1;
     private static final int DIALOG_TILL_DATE_PICKER = 2;
@@ -38,7 +44,14 @@ public class SearchFormActivity extends Activity {
     private static final int EMPTY_ENTRY_ID = -1;
     public static final String EMPTY_SPINNER_ENTRY = "";
 
+    private Resources resources;
+    private String sumModeAny;
+    private String sumModeLess;
+    private String sumModeEqual;
+    private String sumModeGreater;
+
     private DrebedengiEntityDao drebedengiEntityDao;
+    private Spinner sSumMode;
     private EditText etSum;
     private Spinner sCurrency;
     private Spinner sMoneyPlace;
@@ -52,9 +65,19 @@ public class SearchFormActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_form);
 
+        init();
         initUi();
+        fillUiWithStaticData();
         initDao();
         fillUiWithDbData();
+    }
+
+    private void init() {
+        resources = getResources();
+        sumModeAny = resources.getString(R.string.sumModeAny);
+        sumModeLess = resources.getString(R.string.sumModeLess);
+        sumModeEqual = resources.getString(R.string.sumModeEqual);
+        sumModeGreater = resources.getString(R.string.sumModeGreater);
     }
 
     private void initDao() {
@@ -65,6 +88,7 @@ public class SearchFormActivity extends Activity {
     }
 
     private void initUi() {
+        sSumMode = getViewById(R.id.sSumMode);
         etSum = getViewById(R.id.etSum);
         sCurrency = getViewById(R.id.sCurrency);
         sMoneyPlace = getViewById(R.id.sMoneyPlace);
@@ -72,6 +96,30 @@ public class SearchFormActivity extends Activity {
         etFromDate = getViewById(R.id.etFromDate);
         etTillDate = getViewById(R.id.etToDate);
         etComment = getViewById(R.id.etComment);
+    }
+
+    private void fillUiWithStaticData() {
+        setupSumModeSpinner();
+    }
+
+    private void setupSumModeSpinner() {
+        String[] staticData = {sumModeAny, sumModeLess, sumModeEqual, sumModeGreater};
+        ArrayAdapter<String> stringArrayAdapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, staticData);
+        stringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sSumMode.setAdapter(stringArrayAdapter);
+        sSumMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                boolean isSumEnabled = !(parent.getSelectedItem().equals(sumModeAny));
+                etSum.setEnabled(isSumEnabled);
+                sCurrency.setEnabled(isSumEnabled);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void fillUiWithDbData() {
@@ -117,12 +165,52 @@ public class SearchFormActivity extends Activity {
         return arrayAdapter;
     }
 
-
     public void findRecords(View view) {
+        ExpensesRequest expensesRequest = generateExpensesRequest();
+        try {
+            validateInput(expensesRequest);
+        } catch (SearchFormValidationException e) {
+            Toaster.makeShort(this, e.getMessage());
+            return;
+        }
+
+        String requestedCategoryName =
+                ((FinancialTarget) sExpensesCategory.getSelectedItem()).getName();
+        Intent intent = new Intent(this, SearchResultActivity.class);
+        intent.putExtra(SearchResultActivity.SEARCH_CRITERIA_KEY, expensesRequest);
+        intent.putExtra(SearchResultActivity.CATEGORY_NAME_KEY, requestedCategoryName);
+        intent.putExtra(
+                ChooseDbActivity.EXTRA_DB_KEY,
+                getIntent().getStringExtra(ChooseDbActivity.EXTRA_DB_KEY)
+        );
+        startActivity(intent);
+    }
+
+    private ExpensesRequest generateExpensesRequest() {
         ExpensesRequest expensesRequest = new ExpensesRequest();
+
+        // In Db expenses are stored with negative sums.
+        // So sum will be multiplied by -1
+        // and comparison operator will be reversed
+        String sumMode = (String) this.sSumMode.getSelectedItem();
+        if (sumModeAny.equals(sumMode)) {
+            expensesRequest.setSumClauseOperator(null);
+        } else if (sumModeLess.equals(sumMode)) {
+            expensesRequest.setSumClauseOperator(GREATER_THAN);
+        } else if (sumModeEqual.equals(sumMode)) {
+            expensesRequest.setSumClauseOperator(EQUAL);
+        } else if (sumModeGreater.equals(sumMode)) {
+            expensesRequest.setSumClauseOperator(LESS_THAN);
+        }
+
         String sum = etSum.getText().toString();
         if (StringUtils.isNotEmpty(sum)) {
-            expensesRequest.setSum( Float.parseFloat(sum) ); // TODO catch potential exception
+            try {
+                expensesRequest.setFloatSum( -1 * Float.parseFloat(sum) );
+            } catch (NumberFormatException e) {
+                // Just catch without setting the sum.
+                // Further validation will ask user to enter valid number
+            }
         }
 
         int currencyId = ((Currency) sCurrency.getSelectedItem()).getId();
@@ -155,15 +243,16 @@ public class SearchFormActivity extends Activity {
         if (StringUtils.isNotEmpty(comment)) {
             expensesRequest.setComment(comment);
         }
+        return expensesRequest;
+    }
 
-        Intent intent = new Intent(this, SearchResultActivity.class);
-        intent.putExtra(SearchResultActivity.SEARCH_CRITERIA_KEY, expensesRequest);
-        intent.putExtra(SearchResultActivity.CATEGORY_NAME_KEY, expenseCategory.getName());
-        intent.putExtra(
-                ChooseDbActivity.EXTRA_DB_KEY,
-                getIntent().getStringExtra(ChooseDbActivity.EXTRA_DB_KEY)
-        );
-        startActivity(intent);
+    private void validateInput(ExpensesRequest request) throws SearchFormValidationException {
+        SqlComparisonOperator operator = request.getSumClauseOperator();
+        if (LESS_THAN == operator || EQUAL == operator || GREATER_THAN == operator) {
+            if (request.getSum() == null) {
+                throw new SearchFormValidationException("Please enter positive number for sum");
+            }
+        }
     }
 
     private boolean isNotEmptySpinnerEntry(int currencyId) {

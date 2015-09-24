@@ -10,6 +10,8 @@ import com.gmail.maxdiland.drebedengireports.util.sql.SqlComparisonOperator;
  * author Max Diland
  */
 public class ExpensesRequestParcelableCreator implements Parcelable.Creator<ExpensesRequest> {
+    public static final int ENUM_FIELD_NULL_VALUE = -1;
+
     @Override
     public ExpensesRequest createFromParcel(Parcel source) {
         ExpensesRequest expensesRequest = new ExpensesRequest();
@@ -20,7 +22,9 @@ public class ExpensesRequestParcelableCreator implements Parcelable.Creator<Expe
             expensesRequest.setRawSum(sum);
         }
         int ordinal = source.readInt();
-        expensesRequest.setSumClauseOperator(SqlComparisonOperator.values()[ordinal]);
+        if (ordinal > ENUM_FIELD_NULL_VALUE) {
+            expensesRequest.setSumClauseOperator(SqlComparisonOperator.values()[ordinal]);
+        }
 
         expensesRequest.setCurrencyId( (Integer) source.readValue(integerClassLoader) );
         expensesRequest.setTargetId( (Integer) source.readValue(integerClassLoader) );

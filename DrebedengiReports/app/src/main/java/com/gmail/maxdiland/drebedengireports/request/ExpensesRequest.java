@@ -22,7 +22,7 @@ public class ExpensesRequest implements SqlWhereClauseBuildable, Parcelable {
     private static final int SUM_COINS_MULTIPLIER = 100;
 
     private Integer sum;
-    private SqlComparisonOperator sumClauseOperator = SqlComparisonOperator.getDefaultOperator();
+    private SqlComparisonOperator sumClauseOperator;
     private Integer currencyId;
     private Integer targetId;
     private Integer placeId;
@@ -101,11 +101,11 @@ public class ExpensesRequest implements SqlWhereClauseBuildable, Parcelable {
         return comment != null ? SqlUtil.buildLikeClauseContainingPhrase("comment", comment) : "";
     }
 
-    public int getSum() {
+    public Integer getSum() {
         return sum;
     }
 
-    public void setSum(float sum) {
+    public void setFloatSum(float sum) {
         this.sum = (int) (sum * SUM_COINS_MULTIPLIER);
     }
 
@@ -177,7 +177,11 @@ public class ExpensesRequest implements SqlWhereClauseBuildable, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(sum);
-        dest.writeInt( sumClauseOperator.ordinal() );
+        dest.writeInt(
+                sumClauseOperator == null ?
+                        ExpensesRequestParcelableCreator.ENUM_FIELD_NULL_VALUE :
+                        sumClauseOperator.ordinal()
+        );
         dest.writeValue(currencyId);
         dest.writeValue(targetId);
         dest.writeValue(placeId);
