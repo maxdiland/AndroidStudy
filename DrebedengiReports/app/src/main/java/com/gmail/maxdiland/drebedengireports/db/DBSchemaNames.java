@@ -3,7 +3,7 @@ package com.gmail.maxdiland.drebedengireports.db;
 /**
  * author Max Diland
  */
-public class DBNames {
+public class DBSchemaNames {
     public static final String TABLE_CURRENCY = "currency";
     public static final String COLUMN_CURRENCY_ID = "client_id";
     public static final String COLUMN_CURRENCY_NAME = "name";
@@ -24,4 +24,5 @@ public class DBNames {
     public static final String COLUMN_RECORD_PLACE_ID = "place_id";
     public static final String COLUMN_RECORD_DATE = "operation_date";
     public static final String COLUMN_RECORD_COMMENT = "comment";
+    public static final String COLUMN_RECORD_TYPE = "operation_type";
 }

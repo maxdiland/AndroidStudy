@@ -4,6 +4,7 @@ import android.database.Cursor;
 
 import android.util.Log;
 import com.gmail.maxdiland.drebedengireports.db.util.annotation.Field;
+import com.gmail.maxdiland.drebedengireports.log.Tag;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -15,7 +16,6 @@ import java.util.List;
  * author Max Diland
  */
 public class CursorOnObjectMapper {
-    private static final String TAG = "CursorOnObjectMapper";
     private static final int NOT_FOUND_COLUMN_INDEX = -1;
 
     public static <T> T[] mapObjects(Cursor cursor, Class<T> aClass) {
@@ -37,7 +37,7 @@ public class CursorOnObjectMapper {
                 int columnIndex = cursor.getColumnIndex(cursorColumnName);
 
                 if (NOT_FOUND_COLUMN_INDEX == columnIndex) {
-                    Log.d(TAG, "No such column in the cursor: " + cursorColumnName);
+                    Log.d(Tag.DB_DATA_MAPPING, "No such column in the cursor: " + cursorColumnName);
                     continue;
                 }
 
@@ -48,7 +48,7 @@ public class CursorOnObjectMapper {
                     }
                     field.set(instance, columnData);
                 } catch (IllegalAccessException e) {
-                    Log.e(TAG, "Unable to map field. " + field.getName() + ", " + columnData);
+                    Log.e(Tag.DB_DATA_MAPPING, "Unable to map field. " + field.getName() + ", " + columnData);
                 }
             }
         }
@@ -103,7 +103,7 @@ public class CursorOnObjectMapper {
         try {
             return aClass.newInstance();
         } catch (Exception e) {
-            Log.e(TAG, "Unable to instantiate object. Class: " + aClass.getName());
+            Log.e(Tag.DB_DATA_MAPPING, "Unable to instantiate object. Class: " + aClass.getName());
             throw new RuntimeException("Unable to instantiate object", e);
         }
     }

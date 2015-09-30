@@ -38,13 +38,12 @@ import java.util.List;
 import static com.gmail.maxdiland.drebedengireports.util.sql.SqlComparisonOperator.*;
 
 public class SearchFormActivity extends Activity {
+    private static final int SPINNER_LAYOUT = R.layout.spinner_item;
+//    private static final int SPINNER_LAYOUT = android.R.layout.simple_spinner_item;
+
     private static final int DIALOG_FROM_DATE_PICKER = 1;
     private static final int DIALOG_TILL_DATE_PICKER = 2;
 
-    private static final int EMPTY_ENTRY_ID = -1;
-    public static final String EMPTY_SPINNER_ENTRY = "";
-
-    private Resources resources;
     private String sumModeAny;
     private String sumModeLess;
     private String sumModeEqual;
@@ -73,11 +72,10 @@ public class SearchFormActivity extends Activity {
     }
 
     private void init() {
-        resources = getResources();
-        sumModeAny = resources.getString(R.string.sumModeAny);
-        sumModeLess = resources.getString(R.string.sumModeLess);
-        sumModeEqual = resources.getString(R.string.sumModeEqual);
-        sumModeGreater = resources.getString(R.string.sumModeGreater);
+        sumModeAny = getString(R.string.sumModeAny);
+        sumModeLess = getString(R.string.sumModeLess);
+        sumModeEqual = getString(R.string.sumModeEqual);
+        sumModeGreater = getString(R.string.sumModeGreater);
     }
 
     private void initDao() {
@@ -105,7 +103,7 @@ public class SearchFormActivity extends Activity {
     private void setupSumModeSpinner() {
         String[] staticData = {sumModeAny, sumModeLess, sumModeEqual, sumModeGreater};
         ArrayAdapter<String> stringArrayAdapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, staticData);
+                new ArrayAdapter<>(this, SPINNER_LAYOUT, staticData);
         stringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sSumMode.setAdapter(stringArrayAdapter);
         sSumMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -129,25 +127,33 @@ public class SearchFormActivity extends Activity {
     }
 
     private void fillCurrenciesSpinner() {
-        List<Currency> currencies = new ArrayList<>();
-        currencies.add(new Currency(EMPTY_ENTRY_ID, EMPTY_SPINNER_ENTRY));
-        currencies.addAll(Arrays.asList(drebedengiEntityDao.getCurrencies()));
-        ArrayAdapter<Currency> adapter = createBaseSpinnerArrayAdapter(currencies);
+        List<Currency> currencies = new ArrayList<>(
+                Arrays.asList(drebedengiEntityDao.getCurrencies())
+        );
+        ExtendedArrayAdapter<Currency> adapter = createExtendedArrayAdapter(currencies);
+        adapter.setAllowsEmptyEntry(true);
+        adapter.setHintText(getString(R.string.spinner_hint_currency));
         sCurrency.setAdapter(adapter);
     }
 
     private void fillMoneyPlaceSpinner() {
-        List<FinancialTarget> financialTargets = new ArrayList<>();
-        financialTargets.add(new FinancialTarget(EMPTY_ENTRY_ID, EMPTY_SPINNER_ENTRY, 0, null));
-        financialTargets.addAll(Arrays.asList(drebedengiEntityDao.getMoneyPlaceCategories()));
-        ArrayAdapter<FinancialTarget> adapter = createBaseSpinnerArrayAdapter(financialTargets);
+        List<FinancialTarget> financialTargets = new ArrayList<>(
+                Arrays.asList(drebedengiEntityDao.getMoneyPlaceCategories())
+        );
+        ExtendedArrayAdapter<FinancialTarget> adapter = createExtendedArrayAdapter(financialTargets);
+        adapter.setAllowsEmptyEntry(true);
+        adapter.setHintText(getString(R.string.spinner_hint_money_place));
         sMoneyPlace.setAdapter(adapter);
     }
 
     private void fillExpensesSpinner() {
-        sExpensesCategory.setAdapter(new ExpensesSpinner(
+        ArrayList<FinancialTarget> financialTargets = new ArrayList<>(
                 Arrays.asList(drebedengiEntityDao.getSortedExpenseCategories())
-        ));
+        );
+        ExpensesSpinnerAdapter adapter = new ExpensesSpinnerAdapter(financialTargets);
+        adapter.setAllowsEmptyEntry(true);
+        adapter.setHintText(getString(R.string.spinner_hint_expense_category));
+        sExpensesCategory.setAdapter(adapter);
     }
 
     private <V> V getViewById(int resourceId) {
@@ -158,9 +164,9 @@ public class SearchFormActivity extends Activity {
         }
     }
 
-    private <T> ArrayAdapter<T> createBaseSpinnerArrayAdapter(List<T> data) {
-        ArrayAdapter<T> arrayAdapter =
-                new ExtendedArrayAdapter<>(this, android.R.layout.simple_spinner_item, data);
+    private <T> ExtendedArrayAdapter<T> createExtendedArrayAdapter(List<T> data) {
+        ExtendedArrayAdapter<T> arrayAdapter =
+                new ExtendedArrayAdapter<>(this, SPINNER_LAYOUT, data);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return arrayAdapter;
     }
@@ -174,8 +180,8 @@ public class SearchFormActivity extends Activity {
             return;
         }
 
-        String requestedCategoryName =
-                ((FinancialTarget) sExpensesCategory.getSelectedItem()).getName();
+        FinancialTarget category = (FinancialTarget) sExpensesCategory.getSelectedItem();
+        String requestedCategoryName = category == null ? "not selected" : category.getName();
         Intent intent = new Intent(this, SearchResultActivity.class);
         intent.putExtra(SearchResultActivity.SEARCH_CRITERIA_KEY, expensesRequest);
         intent.putExtra(SearchResultActivity.CATEGORY_NAME_KEY, requestedCategoryName);
@@ -213,20 +219,21 @@ public class SearchFormActivity extends Activity {
             }
         }
 
-        int currencyId = ((Currency) sCurrency.getSelectedItem()).getId();
-        if (isNotEmptySpinnerEntry(currencyId)) {
-            expensesRequest.setCurrencyId( currencyId );
+
+        Currency currency = (Currency) sCurrency.getSelectedItem();
+        if (currency != null) {
+            expensesRequest.setCurrencyId(currency.getId());
         }
 
-        int moneyPlaceId = ((FinancialTarget) sMoneyPlace.getSelectedItem()).getId();
-        if (isNotEmptySpinnerEntry(moneyPlaceId)) {
-            expensesRequest.setPlaceId(moneyPlaceId);
+
+        FinancialTarget moneyPlace = (FinancialTarget) sMoneyPlace.getSelectedItem();
+        if (moneyPlace != null) {
+            expensesRequest.setPlaceId(moneyPlace.getId());
         }
 
         FinancialTarget expenseCategory = (FinancialTarget) sExpensesCategory.getSelectedItem();
-        int expenseCategoryId = expenseCategory.getId();
-        if (isNotEmptySpinnerEntry(expenseCategoryId)) {
-            expensesRequest.setTargetId(expenseCategoryId);
+        if (expenseCategory != null) {
+            expensesRequest.setTargetId(expenseCategory.getId());
         }
 
         String fromDate = etFromDate.getText().toString();
@@ -253,10 +260,6 @@ public class SearchFormActivity extends Activity {
                 throw new SearchFormValidationException("Please enter positive number for sum");
             }
         }
-    }
-
-    private boolean isNotEmptySpinnerEntry(int currencyId) {
-        return currencyId > EMPTY_ENTRY_ID;
     }
 
     @Override
@@ -291,9 +294,9 @@ public class SearchFormActivity extends Activity {
         drebedengiEntityDao.close();
     }
 
-    private class ExpensesSpinner extends ExtendedArrayAdapter<FinancialTarget> {
-        private ExpensesSpinner(List<FinancialTarget> expenseCategories) {
-            super(SearchFormActivity.this, android.R.layout.simple_spinner_item, expenseCategories);
+    private class ExpensesSpinnerAdapter extends ExtendedArrayAdapter<FinancialTarget> {
+        private ExpensesSpinnerAdapter(List<FinancialTarget> expenseCategories) {
+            super(SearchFormActivity.this, SPINNER_LAYOUT, expenseCategories);
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         }
 

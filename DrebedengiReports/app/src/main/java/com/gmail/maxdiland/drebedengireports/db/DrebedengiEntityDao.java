@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.gmail.maxdiland.drebedengireports.db.DBNames.*;
+import static com.gmail.maxdiland.drebedengireports.db.DBSchemaNames.*;
 import static com.gmail.maxdiland.drebedengireports.db.util.CursorOnObjectMapper.*;
 import static com.gmail.maxdiland.drebedengireports.util.sql.SqlUtil.*;
 

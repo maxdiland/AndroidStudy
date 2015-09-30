@@ -6,11 +6,14 @@ import android.os.Parcelable;
 import com.gmail.maxdiland.drebedengireports.parcelablecreator.ExpensesRequestParcelableCreator;
 import com.gmail.maxdiland.drebedengireports.util.dateformat.DateTimeFormat;
 import com.gmail.maxdiland.drebedengireports.util.sql.SqlComparisonOperator;
+import com.gmail.maxdiland.drebedengireports.util.sql.SqlLiteFunctions;
 import com.gmail.maxdiland.drebedengireports.util.sql.SqlUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
+
+import static com.gmail.maxdiland.drebedengireports.db.DBSchemaNames.*;
 
 /**
  * author Maksim Diland
@@ -35,9 +38,9 @@ public class ExpensesRequest implements SqlWhereClauseBuildable, Parcelable {
         return SqlUtil.buildCriteria(
                 SqlUtil.buildAndClause(
                         buildSumClause(), buildCurrencyIdClause(), buildTargetIdClause(),
-                        buildPlaceIdClause(), buildCommentClause()
+                        buildPlaceIdClause(), buildCommentClause(), addOperationType()
                 ),
-                "operation_date",
+                COLUMN_RECORD_DATE,
                 SqlUtil.buildAndClause(buildDateFromClause(), buildDateToClause()),
                 null
         );
@@ -49,7 +52,7 @@ public class ExpensesRequest implements SqlWhereClauseBuildable, Parcelable {
         }
 
         return SqlUtil.buildGreaterEqualsCondition(
-                SqlUtil.buildFunctionStatement("datetime", "operation_date"),
+                SqlUtil.buildFunctionStatement(SqlLiteFunctions.DATE_TIME, COLUMN_RECORD_DATE),
                 buildDateFunction(dateFrom)
         );
     }
@@ -61,7 +64,7 @@ public class ExpensesRequest implements SqlWhereClauseBuildable, Parcelable {
         }
 
         return SqlUtil.buildLessCondition(
-                SqlUtil.buildFunctionStatement("datetime", "operation_date"),
+                SqlUtil.buildFunctionStatement(SqlLiteFunctions.DATE_TIME, COLUMN_RECORD_DATE),
                 buildDateFunction(dateTo)
         );
     }
@@ -72,7 +75,7 @@ public class ExpensesRequest implements SqlWhereClauseBuildable, Parcelable {
                     DateTimeFormat.SHORT_DATE.parse(date));
 
             return SqlUtil.buildFunctionStatement(
-                    "datetime", SqlUtil.wrapWithSingleQuotes(sqliteFormattedDate)
+                    SqlLiteFunctions.DATE_TIME, SqlUtil.wrapWithSingleQuotes(sqliteFormattedDate)
             );
         } catch (ParseException e) {
             // TODO handle Parse exception
@@ -82,23 +85,32 @@ public class ExpensesRequest implements SqlWhereClauseBuildable, Parcelable {
     }
 
     private String buildSumClause() {
-        return (sum != null) ? SqlUtil.buildClause("sum", sumClauseOperator, sum) : "";
+        return (sumClauseOperator != null && sum != null) ?
+                SqlUtil.buildClause(COLUMN_RECORD_SUM, sumClauseOperator, sum) : "";
     }
 
     private String buildCurrencyIdClause() {
-        return currencyId != null ? SqlUtil.buildEqualsClause("currency_id", currencyId) : "";
+        return currencyId != null ?
+                SqlUtil.buildEqualsClause(COLUMN_RECORD_CURRENCY_ID, currencyId) : "";
     }
 
     private String buildTargetIdClause() {
-        return targetId != null ? SqlUtil.buildEqualsClause("target_id", targetId) : "";
+        return targetId != null ? SqlUtil.buildEqualsClause(COLUMN_RECORD_TARGET_ID, targetId) : "";
     }
 
     private String buildPlaceIdClause() {
-        return placeId != null ? SqlUtil.buildEqualsClause("place_id", placeId) : "";
+        return placeId != null ? SqlUtil.buildEqualsClause(COLUMN_RECORD_PLACE_ID, placeId) : "";
     }
 
     private String buildCommentClause() {
-        return comment != null ? SqlUtil.buildLikeClauseContainingPhrase("comment", comment) : "";
+        return comment != null ?
+                SqlUtil.buildLikeClauseContainingPhrase(COLUMN_RECORD_COMMENT, comment) : "";
+    }
+
+    private String addOperationType() {
+        return SqlUtil.buildClause(
+                COLUMN_RECORD_TYPE, SqlComparisonOperator.EQUAL, 3
+        );
     }
 
     public Integer getSum() {

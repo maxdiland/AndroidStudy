@@ -55,5 +55,8 @@
     <!-- Spinners -->
     <string name="spinner_spacer_zero" />
     <string name="spinner_spacer">"      "</string>
+    <string name="spinner_hint_currency">Currency</string>
+    <string name="spinner_hint_money_place">Money place</string>
+    <string name="spinner_hint_expense_category">Category</string>
 
 </resources>
