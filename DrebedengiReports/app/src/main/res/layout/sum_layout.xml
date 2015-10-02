@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llSum"
+    style="@style/LinearLayoutSimpleFormRow"
+    >
+
+    <EditText
+        android:id="@+id/etSum"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:hint="@string/searchHintSum"
+        android:inputType="numberDecimal"
+        style="@style/EditText"
+        />
+
+    <Spinner
+        android:id="@+id/sCurrency"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:spinnerMode="dialog"
+        style="@style/Spinner"
+        />
+
+</LinearLayout>

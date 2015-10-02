@@ -5,4 +5,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="zero_margin">0dp</dimen>
+
+    <dimen name="form_input_horizontal_margin">4dp</dimen>
+    <dimen name="form_row_vertical_margin">10dp</dimen>
+
 </resources>

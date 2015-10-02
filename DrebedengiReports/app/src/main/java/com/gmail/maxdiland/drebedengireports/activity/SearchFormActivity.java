@@ -6,12 +6,14 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -50,7 +52,9 @@ public class SearchFormActivity extends Activity {
     private String sumModeGreater;
 
     private DrebedengiEntityDao drebedengiEntityDao;
+    private LinearLayout llContainer;
     private Spinner sSumMode;
+    private LinearLayout llSum;
     private EditText etSum;
     private Spinner sCurrency;
     private Spinner sMoneyPlace;
@@ -86,9 +90,13 @@ public class SearchFormActivity extends Activity {
     }
 
     private void initUi() {
+        llContainer = getViewById(R.id.llContainer);
         sSumMode = getViewById(R.id.sSumMode);
-        etSum = getViewById(R.id.etSum);
-        sCurrency = getViewById(R.id.sCurrency);
+
+        llSum = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.sum_layout, llContainer, false);
+        etSum = (EditText) llSum.findViewById(R.id.etSum);
+        sCurrency = (Spinner) llSum.findViewById(R.id.sCurrency);
+
         sMoneyPlace = getViewById(R.id.sMoneyPlace);
         sExpensesCategory = getViewById(R.id.sExpensesCategory);
         etFromDate = getViewById(R.id.etFromDate);
@@ -110,8 +118,11 @@ public class SearchFormActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 boolean isSumEnabled = !(parent.getSelectedItem().equals(sumModeAny));
-                etSum.setEnabled(isSumEnabled);
-                sCurrency.setEnabled(isSumEnabled);
+                if (isSumEnabled) {
+                    llContainer.addView(llSum, 1);
+                } else {
+                    llContainer.removeView(llSum);
+                }
             }
 
             @Override
@@ -209,22 +220,23 @@ public class SearchFormActivity extends Activity {
             expensesRequest.setSumClauseOperator(LESS_THAN);
         }
 
-        String sum = etSum.getText().toString();
-        if (StringUtils.isNotEmpty(sum)) {
-            try {
-                expensesRequest.setFloatSum( -1 * Float.parseFloat(sum) );
-            } catch (NumberFormatException e) {
-                // Just catch without setting the sum.
-                // Further validation will ask user to enter valid number
+        if (!sumModeAny.equals(sumMode)) {
+            String sum = etSum.getText().toString();
+            if (StringUtils.isNotEmpty(sum)) {
+                try {
+                    expensesRequest.setFloatSum( -1 * Float.parseFloat(sum) );
+                } catch (NumberFormatException e) {
+                    // Just catch without setting the sum.
+                    // Further validation will ask user to enter valid number
+                }
+            }
+
+
+            Currency currency = (Currency) sCurrency.getSelectedItem();
+            if (currency != null) {
+                expensesRequest.setCurrencyId(currency.getId());
             }
         }
-
-
-        Currency currency = (Currency) sCurrency.getSelectedItem();
-        if (currency != null) {
-            expensesRequest.setCurrencyId(currency.getId());
-        }
-
 
         FinancialTarget moneyPlace = (FinancialTarget) sMoneyPlace.getSelectedItem();
         if (moneyPlace != null) {

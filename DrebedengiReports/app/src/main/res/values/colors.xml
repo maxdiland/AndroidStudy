@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="black" type="color">#000000</item>
+
     <item name="splashScreenBackground" type="color">#fcebaf</item>
     <item name="ignoredOperationListItem" type="color">#ffffd3d1</item>
 </resources>

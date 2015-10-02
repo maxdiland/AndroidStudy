@@ -5,10 +5,47 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="textBlock">
+    <style name="ZeroMarginPadding">
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_marginStart">0dp</item>
+        <item name="android:layout_marginEnd">0dp</item>
+    </style>
+
+    <style name="StandardText" parent="ZeroMarginPadding">
         <item name="android:textSize">@dimen/standard_text_size</item>
-        <item name="android:layout_marginTop">5dp</item>
-        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Spinner" parent="StandardText">
+        <item name="android:background">@drawable/custom_spinner</item>
+        <item name="android:layout_marginStart">@dimen/form_input_horizontal_margin</item>
+        <item name="android:layout_marginEnd">@dimen/form_input_horizontal_margin</item>
+    </style>
+
+    <style name="EditText" parent="StandardText">
+        <item name="android:background">@drawable/custom_edit_text</item>
+        <item name="android:layout_marginStart">@dimen/form_input_horizontal_margin</item>
+        <item name="android:layout_marginEnd">@dimen/form_input_horizontal_margin</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="SpinnerItemTextView" parent="StandardText">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="LinearLayoutSimpleFormRow" parent="ZeroMarginPadding">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:orientation">horizontal</item>
+
+        <item name="android:layout_marginTop">@dimen/form_row_vertical_margin</item>
+        <item name="android:layout_marginBottom">@dimen/form_row_vertical_margin</item>
     </style>
 
 </resources>
